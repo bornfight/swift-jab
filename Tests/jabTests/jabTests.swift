@@ -1,8 +1,6 @@
 import XCTest
 @testable import jab
 
-private let jsons = [1]
-
 //     JSON SCHEMA
 //
 //        PERSON
