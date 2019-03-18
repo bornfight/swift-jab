@@ -54,11 +54,7 @@ final class jabTests: XCTestCase {
     }()
     lazy var jsonApiDeserializer = JSONAPIDeserializer(decoder: jsonDecoder)
     
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct
-        // results.
-//        XCTAssertEqual(jab().text, "Hello, World!")
+    func testResourceCollectionHavingSomeIncludedData() {
         guard let rootJsonURL = bundle.url(forResource: "cars_keys", withExtension: "json"),
               let rootJson = try? String(contentsOf: rootJsonURL),
               let data = rootJson.data(using: .utf8)
@@ -76,6 +72,6 @@ final class jabTests: XCTestCase {
     }
 
     static var allTests = [
-        ("testExample", testExample),
+        ("testExample", testResourceCollectionHavingSomeIncludedData),
     ]
 }
