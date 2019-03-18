@@ -53,12 +53,8 @@ final class jabTests: XCTestCase {
     lazy var jsonApiDeserializer = JSONAPIDeserializer(decoder: jsonDecoder)
     
     func testResourceCollectionHavingSomeIncludedData() {
-        guard let rootJsonURL = bundle.url(forResource: "cars_keys", withExtension: "json"),
-              let rootJson = try? String(contentsOf: rootJsonURL),
-              let data = rootJson.data(using: .utf8)
-        else {
-            XCTAssertTrue(false, "could not find JSON")
-            return
+        guard let data = loadJsonData(forResource: "cars_keys", withExtension: "json") else {
+            fatalError("Could not load JSON data")
         }
         
         do {
@@ -67,6 +63,19 @@ final class jabTests: XCTestCase {
         } catch {
             XCTAssertTrue(false, "error deserializing: \(error.localizedDescription)")
         }
+    }
+    
+    func testResourceSingleHavingSomeIncludedData() {
+        
+    }
+    
+    private func loadJsonData(forResource resource: String, withExtension extension: String) -> Data? {
+        guard let rootJsonURL = bundle.url(forResource: "cars_keys", withExtension: "json"),
+              let rootJson = try? String(contentsOf: rootJsonURL),
+              let data = rootJson.data(using: .utf8)
+        else { return nil }
+        
+        return data
     }
 
     static var allTests = [
