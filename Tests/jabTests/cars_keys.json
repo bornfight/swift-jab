@@ -1,0 +1,134 @@
+{
+    "jsonapi": {
+        "version": "1.0"
+    },
+    "links": {
+        "self": "/cars?page[number]=1&page[size]=100",
+        "first": "/cars?page[number]=1&page[size]=100",
+        "last": "/cars?page[number]=1&page[size]=100",
+        "prev": null,
+        "next": null
+    },
+    "data": [{
+        "type": "cars",
+        "id": "1",
+        "attributes": {
+            "color": "red",
+            "top_speed": 240,
+            "is_good": 1
+        },
+        "relationships": {
+            "owner": {
+                "data": {
+                    "type": "people",
+                    "id": "2"
+                }
+            },
+            "key": {
+                "data": {
+                    "type": "keys",
+                    "id": "4"
+                }
+            }
+        }
+    },
+    {
+        "type": "cars",
+        "id": "2",
+        "attributes": {
+            "color": "rainbow",
+            "top_speed": 295,
+            "is_good": 1
+        },
+        "relationships": {
+            "owner": {
+                "data": {
+                    "type": "people",
+                    "id": "3"
+                }
+            },
+            "key": {
+                "data": {
+                    "type": "keys",
+                    "id": "18"
+                }
+            }
+        }
+    },
+    {
+        "type": "cars",
+        "id": "3",
+        "attributes": {
+            "color": "brown",
+            "top_speed": 80,
+            "is_good": 0
+        },
+        "relationships": {
+            "owner": {
+                "data": {
+                    "type": "people",
+                    "id": "9"
+                }
+            },
+            "key": {
+                "data": {
+                    "type": "keys",
+                    "id": "7"
+                }
+            }
+        }
+    }
+    ],
+    "included": [{
+        "type": "keys",
+        "id": "4",
+        "attributes": {
+            "is_wireless": 1,
+            "has_keychain": 1,
+            "name": "Kljucevi Dragutina Tadijanovica"
+        },
+        "relationships": {
+            "cars": {
+                "data": [{
+                    "type": "cars",
+                    "id": "1"
+                }]
+            }
+        }
+    },
+    {
+        "type": "keys",
+        "id": "7",
+        "attributes": {
+            "is_wireless": 1,
+            "has_keychain": 0,
+            "name": "Sestrini Kljucevi"
+        },
+        "relationships": {
+            "cars": {
+                "data": [{
+                    "type": "cars",
+                    "id": "3"
+                }]
+            }
+        }
+    },
+    {
+        "type": "keys",
+        "id": "18",
+        "attributes": {
+            "is_wireless": 0,
+            "has_keychain": 1,
+            "name": "Bratovi kljucevi"
+        },
+        "relationships": {
+            "cars": {
+                "data": [{
+                    "type": "cars",
+                    "id": "2"
+                }]
+            }
+        }
+    }
+    ]
+}
