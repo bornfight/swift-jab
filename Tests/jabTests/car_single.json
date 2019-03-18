@@ -1,0 +1,80 @@
+{
+    "jsonapi": {
+        "version": "1.0"
+    },
+    "data": {
+        "type": "cars",
+        "id": "1",
+        "attributes": {
+            "color": "red",
+            "top_speed": 240,
+            "is_good": 1
+        },
+        "relationships": {
+            "owner": {
+                "data": {
+                    "type": "people",
+                    "id": "2"
+                }
+            },
+            "key": {
+                "data": {
+                    "type": "keys",
+                    "id": "4"
+                }
+            }
+        }
+    },
+    "included": [{
+        "type": "keys",
+        "id": "4",
+        "attributes": {
+            "is_wireless": 1,
+            "has_keychain": 1,
+            "name": "Kljucevi Dragutina Tadijanovica"
+        },
+        "relationships": {
+            "cars": {
+                "data": [{
+                    "type": "cars",
+                    "id": "1"
+                }]
+            }
+        }
+    },
+    {
+        "type": "keys",
+        "id": "7",
+        "attributes": {
+            "is_wireless": 1,
+            "has_keychain": 0,
+            "name": "Sestrini Kljucevi"
+        },
+        "relationships": {
+            "cars": {
+                "data": [{
+                    "type": "cars",
+                    "id": "3"
+                }]
+            }
+        }
+    },
+    {
+        "type": "keys",
+        "id": "18",
+        "attributes": {
+            "is_wireless": 0,
+            "has_keychain": 1,
+            "name": "Bratovi kljucevi"
+        },
+        "relationships": {
+            "cars": {
+                "data": [{
+                    "type": "cars",
+                    "id": "2"
+                }]
+            }
+        }
+    }
+    ]
+}
