@@ -38,8 +38,8 @@ public class JSONAPIDeserializer {
         let jsonDataOption = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? NSDictionary
         let jsonData = try unwrap(jsonDataOption, orThrow: Error.notConvertibleToDictionary(data: data))
         
-        let linksString = try unwrap(jsonData["links"] as? String, orThrow: Error.missingLinksParameter(dictionary: jsonData))
-        let linksData = try unwrap(linksString.data(using: .utf8), orThrow: Error.failedToTransformToUTF8(string: linksString))
+        let linksDict = try unwrap(jsonData["links"] as? NSDictionary, orThrow: Error.missingLinksParameter(dictionary: jsonData))
+        let linksData = try JSONSerialization.data(withJSONObject: linksDict, options: .prettyPrinted)
         let links = try decoder.decode(Links.self, from: linksData)
         
         let resourcesDictionary = try flattener.flattenCollection(jsonAPI: jsonData)
