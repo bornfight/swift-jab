@@ -102,7 +102,7 @@ final class jabTests: XCTestCase {
         
         do {
             let deserialized: Car = try jsonApiDeserializer.deserialize(data: data)
-            let expectedKey = Key(identifier: "1", isWireless: 1, hasKeychain: 1, name: "Kljucevi Dragutina Tadijanovica")
+            let expectedKey = Key(identifier: "4", isWireless: 1, hasKeychain: 1, name: "Kljucevi Dragutina Tadijanovica")
             let expectedCar = Car(identifier: "1", color: "red", topSpeed: 240, isGood: 1, key: expectedKey)
             XCTAssertEqual(deserialized, expectedCar, "Deserialized car should match expected values")
         } catch {
