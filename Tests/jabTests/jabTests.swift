@@ -30,13 +30,15 @@ import XCTest
 //    Key -> Car is a one to one relationship
 //
 
-struct Car: Codable, Equatable {
+struct Car: Codable, Equatable, JSONAPIIdentifiable {
+    var identifier: String
     let color: String
     let topSpeed: Int
     let isGood: Int
     let key: Key
     
-    init(color: String, topSpeed: Int, isGood: Int, key: Key) {
+    init(identifier: String, color: String, topSpeed: Int, isGood: Int, key: Key) {
+        self.identifier = identifier
         self.color = color
         self.topSpeed = topSpeed
         self.isGood = isGood
@@ -44,12 +46,14 @@ struct Car: Codable, Equatable {
     }
 }
 
-struct Key: Codable, Equatable {
+struct Key: Codable, Equatable, JSONAPIIdentifiable {
+    var identifier: String
     let isWireless: Int
     let hasKeychain: Int
     let name: String
     
-    init(isWireless: Int, hasKeychain: Int, name: String) {
+    init(identifier: String, isWireless: Int, hasKeychain: Int, name: String) {
+        self.identifier = identifier
         self.isWireless = isWireless
         self.hasKeychain = hasKeychain
         self.name = name
@@ -98,8 +102,8 @@ final class jabTests: XCTestCase {
         
         do {
             let deserialized: Car = try jsonApiDeserializer.deserialize(data: data)
-            let expectedKey = Key(isWireless: 1, hasKeychain: 1, name: "Kljucevi Dragutina Tadijanovica")
-            let expectedCar = Car(color: "red", topSpeed: 240, isGood: 1, key: expectedKey)
+            let expectedKey = Key(identifier: "1", isWireless: 1, hasKeychain: 1, name: "Kljucevi Dragutina Tadijanovica")
+            let expectedCar = Car(identifier: "1", color: "red", topSpeed: 240, isGood: 1, key: expectedKey)
             XCTAssertEqual(deserialized, expectedCar, "Deserialized car should match expected values")
         } catch {
             XCTAssertTrue(false, "error deserializing: \(error.localizedDescription)")
