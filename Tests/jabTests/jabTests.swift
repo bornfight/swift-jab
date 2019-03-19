@@ -35,12 +35,25 @@ class Car: Codable {
     let topSpeed: Int
     let isGood: Int
     let key: Key
+    
+    init(color: String, topSpeed: Int, isGood: Int, key: Key) {
+        self.color = color
+        self.topSpeed = topSpeed
+        self.isGood = isGood
+        self.key = key
+    }
 }
 
 class Key: Codable {
     let isWireless: Int
     let hasKeychain: Int
     let name: String
+    
+    init(isWireless: Int, hasKeychain: Int, name: String) {
+        self.isWireless = isWireless
+        self.hasKeychain = hasKeychain
+        self.name = name
+    }
 }
 
 final class jabTests: XCTestCase {
