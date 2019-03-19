@@ -14,6 +14,8 @@ public class JSONAPIDeserializer {
         case notConvertibleToDictionary(data: Data)
     }
     
+    public typealias Resource = Codable & JSONAPIIdentifiable
+    
     public static let `default` = JSONAPIDeserializer()
     
     private let decoder: JSONDecoder
@@ -24,17 +26,17 @@ public class JSONAPIDeserializer {
         self.flattener = jsonApiDecoder
     }
     
-    public func deserialize<Resource: Codable>(data: Data) throws -> Resource {
+    public func deserialize<T: Resource>(data: Data) throws -> T {
         let jsonDataOption = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? NSDictionary
         let jsonData = try unwrap(jsonDataOption, orThrow: Error.notConvertibleToDictionary(data: data))
 
         let resourceDictionary = try flattener.flatten(jsonAPI: jsonData)
         let resourceData = try JSONSerialization.data(withJSONObject: resourceDictionary, options: .prettyPrinted)
         
-        return try decoder.decode(Resource.self, from: resourceData)
+        return try decoder.decode(T.self, from: resourceData)
     }
     
-    public func deserializeCollection<Resource: Codable>(data: Data) throws -> Paginated<Resource> {
+    public func deserializeCollection<T: Resource>(data: Data) throws -> Paginated<T> {
         let jsonDataOption = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? NSDictionary
         let jsonData = try unwrap(jsonDataOption, orThrow: Error.notConvertibleToDictionary(data: data))
         
@@ -44,7 +46,7 @@ public class JSONAPIDeserializer {
         
         let resourcesDictionary = try flattener.flattenCollection(jsonAPI: jsonData)
         let resourcesData = try JSONSerialization.data(withJSONObject: resourcesDictionary, options: .prettyPrinted)
-        let resources = try decoder.decode([Resource].self, from: resourcesData)
+        let resources = try decoder.decode([T].self, from: resourcesData)
         
         return Paginated(links: links, resources: resources)
     }
