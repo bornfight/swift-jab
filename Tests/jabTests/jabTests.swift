@@ -106,6 +106,19 @@ final class jabTests: XCTestCase {
         }
     }
     
+    func testResourceSingleMissingIncludedDataFailsAtDecoding() {
+        guard let data = loadJsonData(forResource: "car_single_missing_includes") else {
+            fatalError("Could not load JSON data")
+        }
+        
+        do {
+            let deserialized: Car = try jsonApiDeserializer.deserialize(data: data)
+            XCTAssertTrue(false, "Somehow decoded an objecet with missing data")
+        } catch {
+            XCTAssertTrue(true, "Object missing included data: \(error.localizedDescription)")
+        }
+    }
+    
     private func loadJsonData(forResource resource: String) -> Data? {
         guard let rootJsonURL = bundle.url(forResource: resource, withExtension: "json"),
               let rootJson = try? String(contentsOf: rootJsonURL),

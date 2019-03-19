@@ -1,0 +1,28 @@
+{
+    "jsonapi": {
+        "version": "1.0"
+    },
+    "data": {
+        "type": "cars",
+        "id": "1",
+        "attributes": {
+            "color": "red",
+            "top_speed": 240,
+            "is_good": 1
+        },
+        "relationships": {
+            "owner": {
+                "data": {
+                    "type": "people",
+                    "id": "2"
+                }
+            },
+            "key": {
+                "data": {
+                    "type": "keys",
+                    "id": "4"
+                }
+            }
+        }
+    }
+}
