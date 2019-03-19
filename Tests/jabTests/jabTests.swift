@@ -91,6 +91,21 @@ final class jabTests: XCTestCase {
         }
     }
     
+    func testResourceSingleHavingSomeIncludedDataHasCorrectProps() {
+        guard let data = loadJsonData(forResource: "car_single") else {
+            fatalError("Could not load JSON data")
+        }
+        
+        do {
+            let deserialized: Car = try jsonApiDeserializer.deserialize(data: data)
+            let expectedKey = Key(isWireless: 1, hasKeychain: 1, name: "Kljucevi Dragutina Tadijanovica")
+            let expectedCar = Car(color: "red", topSpeed: 240, isGood: 1, key: expectedKey)
+            XCTAssertEqual(deserialized, expectedCar, "Deserialized car should match expected values")
+        } catch {
+            XCTAssertTrue(false, "error deserializing: \(error.localizedDescription)")
+        }
+    }
+    
     private func loadJsonData(forResource resource: String) -> Data? {
         guard let rootJsonURL = bundle.url(forResource: resource, withExtension: "json"),
               let rootJson = try? String(contentsOf: rootJsonURL),
