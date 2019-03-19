@@ -30,7 +30,7 @@ import XCTest
 //    Key -> Car is a one to one relationship
 //
 
-class Car: Codable {
+struct Car: Codable, Equatable {
     let color: String
     let topSpeed: Int
     let isGood: Int
@@ -44,7 +44,7 @@ class Car: Codable {
     }
 }
 
-class Key: Codable {
+struct Key: Codable, Equatable {
     let isWireless: Int
     let hasKeychain: Int
     let name: String
