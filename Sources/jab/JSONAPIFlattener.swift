@@ -36,22 +36,22 @@ class JSONAPIFlattener {
         return try parse(single: dataObject, includedObjects: includedObjects)
     }
     
-    private func parse(single jsonApiObject: NSDictionary, includedObjects: [NSDictionary]?) throws -> NSDictionary {
+    private func parse(single jsonApiObject: NSDictionary, includedObjects: [NSDictionary]?, recursivelySearchRelationships: Bool = true) throws -> NSDictionary {
         guard let attributes = jsonApiObject["attributes"] as? NSDictionary else {
             throw Error.hasNoAttributes(dictionary: jsonApiObject)
         }
-        
-        guard let relationships = jsonApiObject["relationships"] as? NSDictionary,
-              let includes = includedObjects
-        else { return attributes }
         
         guard let identifier = jsonApiObject["id"] as? String else {
             throw Error.hasNoIdentifier(dictionary: jsonApiObject)
         }
         
         let JSON = NSMutableDictionary(dictionary: attributes)
-        
         JSON["identifier"] = identifier
+        
+        guard let relationships = jsonApiObject["relationships"] as? NSDictionary,
+              let includes = includedObjects,
+              recursivelySearchRelationships
+        else { return JSON }
         
         let relationshipData = parse(relationships: relationships, includes: includes)
         
@@ -69,11 +69,11 @@ class JSONAPIFlattener {
             guard let relationship = relationships[relationshipKey] as? NSDictionary else { continue }
             
             if let relationshipData = relationship["data"] as? [NSDictionary] {
-                let allIncludedObjects = relationshipData.compactMap { data in fetchAttributes(of: data, in: includes) }
+                let allIncludedObjects = relationshipData.compactMap { data in fetchObjectAttributes(of: data, in: includes) }
                 
                 JSON[relationshipKey] = allIncludedObjects
             } else if let relationshipData = relationship["data"] as? NSDictionary {
-                guard let includedAttributes = fetchAttributes(of: relationshipData, in: includes) else {
+                guard let includedAttributes = fetchObjectAttributes(of: relationshipData, in: includes) else {
                     continue
                 }
                 
@@ -90,13 +90,12 @@ class JSONAPIFlattener {
         return includes.first(where: { $0["type"] as? String == type && $0["id"] as? String == id })
     }
     
-    private func fetchAttributes(of dictionary: NSDictionary, in includedObjects: [NSDictionary]) -> NSDictionary? {
+    private func fetchObjectAttributes(of dictionary: NSDictionary, in includedObjects: [NSDictionary]) -> NSDictionary? {
         guard let type = dictionary["type"] as? String,
               let id = dictionary["id"] as? String,
-              let included = locateIncludedObject(id: id, type: type, in: includedObjects),
-              let includedAttributes = included["attributes"] as? NSDictionary
+              let included = locateIncludedObject(id: id, type: type, in: includedObjects)
         else { return nil }
         
-        return includedAttributes
+        return try? parse(single: included, includedObjects: includedObjects, recursivelySearchRelationships: false)
     }
 }
