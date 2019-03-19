@@ -52,7 +52,7 @@ final class jabTests: XCTestCase {
     }()
     lazy var jsonApiDeserializer = JSONAPIDeserializer(decoder: jsonDecoder)
     
-    func testResourceCollectionHavingSomeIncludedData() {
+    func testResourceCollectionHavingSomeIncludedDataCanBeDeserialized() {
         guard let data = loadJsonData(forResource: "cars_keys") else {
             fatalError("Could not load JSON data")
         }
@@ -65,7 +65,7 @@ final class jabTests: XCTestCase {
         }
     }
     
-    func testResourceSingleHavingSomeIncludedData() {
+    func testResourceSingleHavingSomeIncludedDataCanBeDeserialized() {
         guard let data = loadJsonData(forResource: "car_single") else {
             fatalError("Could not load JSON data")
         }
@@ -88,6 +88,6 @@ final class jabTests: XCTestCase {
     }
 
     static var allTests = [
-        ("testExample", testResourceCollectionHavingSomeIncludedData),
+        ("testExample", testResourceCollectionHavingSomeIncludedDataCanBeDeserialized),
     ]
 }
