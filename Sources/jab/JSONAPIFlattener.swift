@@ -12,6 +12,7 @@ import Foundation
 class JSONAPIFlattener {
     enum Error: Swift.Error {
         case hasNoAttributes(dictionary: NSDictionary)
+        case hasNoIdentifier(dictionary: NSDictionary)
         case missingDataAttribute(dictionary: NSDictionary)
     }
     
@@ -44,15 +45,33 @@ class JSONAPIFlattener {
               let includes = includedObjects
         else { return attributes }
         
+        guard let identifier = jsonApiObject["id"] as? String else {
+            throw Error.hasNoIdentifier(dictionary: jsonApiObject)
+        }
+        
         let JSON = NSMutableDictionary(dictionary: attributes)
+        
+        JSON["identifier"] = identifier
+        
+        let relationshipData = parse(relationships: relationships, includes: includes)
+        
+        for relationKey in relationshipData.allKeys {
+            JSON[relationKey] = relationshipData[relationKey]
+        }
+        
+        return JSON
+    }
+    
+    private func parse(relationships: NSDictionary, includes: [NSDictionary]) -> NSMutableDictionary {
+        let JSON = NSMutableDictionary()
         
         for relationshipKey in relationships.allKeys {
             guard let relationship = relationships[relationshipKey] as? NSDictionary else { continue }
             
             if let relationshipData = relationship["data"] as? [NSDictionary] {
-                let includes = relationshipData.compactMap { data in fetchAttributes(of: data, in: includes) }
+                let allIncludedObjects = relationshipData.compactMap { data in fetchAttributes(of: data, in: includes) }
                 
-                JSON[relationshipKey] = includes
+                JSON[relationshipKey] = allIncludedObjects
             } else if let relationshipData = relationship["data"] as? NSDictionary {
                 guard let includedAttributes = fetchAttributes(of: relationshipData, in: includes) else {
                     continue
