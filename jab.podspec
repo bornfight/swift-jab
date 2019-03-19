@@ -13,6 +13,9 @@ Parses JSON:API responses into predefined codable objects, reducing relationship
   s.author           = { 'Bornfight' => 'ios@bornfight.com', 'Dino Srdoc' => 'dino.srdoc@bornfight.com' }
   s.source           = { :git => 'https://github.com/degordian/swift-jab.git', :tag => s.version.to_s }
 
+  s.source_files = 'Sources/jab/**/*'
+  s.frameworks = 'Foundation'
+
   s.requires_arc = true
   s.ios.deployment_target = '9.0'
   s.swift_version = '4.2'
