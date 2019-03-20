@@ -40,7 +40,7 @@ public class JSONAPIDeserializer {
         let jsonDataOption = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? Dictionary<String, Any>
         let jsonData = try unwrap(jsonDataOption, orThrow: Error.notConvertibleToDictionary(data: data))
         
-        let linksDict = try unwrap(jsonData["links"] as? Dictionary<String, Any>, orThrow: Error.missingLinksParameter(dictionary: jsonData))
+        let linksDict = try unwrap(jsonData[JSONAPIKeys.links] as? Dictionary<String, Any>, orThrow: Error.missingLinksParameter(dictionary: jsonData))
         let linksData = try JSONSerialization.data(withJSONObject: linksDict, options: .prettyPrinted)
         let links = try decoder.decode(Links.self, from: linksData)
         
