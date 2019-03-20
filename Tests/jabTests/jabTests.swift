@@ -74,12 +74,7 @@ final class jabTests: XCTestCase {
             fatalError("Could not load JSON data")
         }
         
-        do {
-            let deserialized: Paginated<Car> = try jsonApiDeserializer.deserializeCollection(data: data)
-            XCTAssertTrue(true)
-        } catch {
-            XCTAssertTrue(false, "error deserializing: \(error.localizedDescription)")
-        }
+        XCTAssertNoThrow(try jsonApiDeserializer.deserializeCollection(data: data) as Paginated<Car>)
     }
     
     func testResourceSingleHavingSomeIncludedDataCanBeDeserialized() {
