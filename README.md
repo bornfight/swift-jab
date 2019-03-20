@@ -19,7 +19,7 @@ let jsonApiDeserializer = JSONAPIDeserializer(decoder: jsonDecoder)
 
 The deserializer expects an object conforming to `Codable` to be deserialized from the response.
 If there was a `Car` object looking a little something like this
-```
+```swift
 struct Car: Codable, Hashable {
     let mark: String
     let model: String
