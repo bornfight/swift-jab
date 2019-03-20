@@ -87,12 +87,7 @@ final class jabTests: XCTestCase {
             fatalError("Could not load JSON data")
         }
         
-        do {
-            let deserialized: Car = try jsonApiDeserializer.deserialize(data: data)
-            XCTAssertTrue(true)
-        } catch {
-            XCTAssertTrue(false, "error deserializing: \(error.localizedDescription)")
-        }
+        XCTAssertNoThrow(try jsonApiDeserializer.deserialize(data: data) as Car)
     }
     
     func testResourceSingleHavingSomeIncludedDataHasCorrectProps() {
@@ -106,7 +101,7 @@ final class jabTests: XCTestCase {
             let expectedCar = Car(identifier: "1", color: "red", topSpeed: 240, isGood: 1, key: expectedKey)
             XCTAssertEqual(deserialized, expectedCar, "Deserialized car should match expected values")
         } catch {
-            XCTAssertTrue(false, "error deserializing: \(error.localizedDescription)")
+            XCTAssertTrue(false, "Error deserializing: \(error.localizedDescription)")
         }
     }
     
@@ -115,12 +110,7 @@ final class jabTests: XCTestCase {
             fatalError("Could not load JSON data")
         }
         
-        do {
-            let deserialized: Car = try jsonApiDeserializer.deserialize(data: data)
-            XCTAssertTrue(false, "Somehow decoded an objecet with missing data")
-        } catch {
-            XCTAssertTrue(true, "Object missing included data: \(error.localizedDescription)")
-        }
+        XCTAssertThrowsError(try jsonApiDeserializer.deserialize(data: data) as Car)
     }
     
     private func loadJsonData(forResource resource: String) -> Data? {
