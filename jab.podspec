@@ -2,7 +2,7 @@
 Pod::Spec.new do |s|
   s.name             = 'jab'
   s.version          = '0.1.0'
-  s.summary          = 'JSON:API response transformer.'
+  s.summary          = 'jab, meaning JSON:API Bridge, is a lightweight JSON:API response transformer.'
 
   s.description      = <<-DESC
 Parses JSON:API responses into predefined codable objects, reducing relationships and metadata into a single JSON response.
