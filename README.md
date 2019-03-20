@@ -1,4 +1,4 @@
-# jab - JSON:API Bridge
+# JAB - JSON:API Bridge
 
 A lightweight iOS library for transforming [JSON:API](https://jsonapi.org) responses into "usual" REST API responses.
 
