@@ -133,6 +133,9 @@ final class jabTests: XCTestCase {
     }
 
     static var allTests = [
-        ("testExample", testResourceCollectionHavingSomeIncludedDataCanBeDeserialized),
+        ("testResourceCollectionHavingSomeIncludedDataCanBeDeserialized", testResourceCollectionHavingSomeIncludedDataCanBeDeserialized),
+        ("testResourceSingleHavingSomeIncludedDataCanBeDeserialized", testResourceSingleHavingSomeIncludedDataCanBeDeserialized),
+        ("testResourceSingleHavingSomeIncludedDataHasCorrectProps", testResourceSingleHavingSomeIncludedDataHasCorrectProps),
+        ("testResourceSingleMissingIncludedDataFailsAtDecoding", testResourceSingleMissingIncludedDataFailsAtDecoding)
     ]
 }
