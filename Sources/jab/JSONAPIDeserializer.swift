@@ -9,7 +9,7 @@ import Foundation
 
 public class JSONAPIDeserializer {
     enum Error: Swift.Error {
-        case missingLinksParameter(dictionary: NSDictionary)
+        case missingLinksParameter(dictionary: Dictionary<String, Any>)
         case failedToTransformToUTF8(string: String)
         case notConvertibleToDictionary(data: Data)
     }
@@ -27,7 +27,7 @@ public class JSONAPIDeserializer {
     }
     
     public func deserialize<T: Resource>(data: Data) throws -> T {
-        let jsonDataOption = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? NSDictionary
+        let jsonDataOption = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? Dictionary<String, Any>
         let jsonData = try unwrap(jsonDataOption, orThrow: Error.notConvertibleToDictionary(data: data))
 
         let resourceDictionary = try flattener.flatten(jsonAPI: jsonData)
@@ -37,10 +37,10 @@ public class JSONAPIDeserializer {
     }
     
     public func deserializeCollection<T: Resource>(data: Data) throws -> Paginated<T> {
-        let jsonDataOption = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? NSDictionary
+        let jsonDataOption = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? Dictionary<String, Any>
         let jsonData = try unwrap(jsonDataOption, orThrow: Error.notConvertibleToDictionary(data: data))
         
-        let linksDict = try unwrap(jsonData["links"] as? NSDictionary, orThrow: Error.missingLinksParameter(dictionary: jsonData))
+        let linksDict = try unwrap(jsonData["links"] as? Dictionary<String, Any>, orThrow: Error.missingLinksParameter(dictionary: jsonData))
         let linksData = try JSONSerialization.data(withJSONObject: linksDict, options: .prettyPrinted)
         let links = try decoder.decode(Links.self, from: linksData)
         
