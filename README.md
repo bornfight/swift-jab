@@ -20,7 +20,8 @@ let jsonApiDeserializer = JSONAPIDeserializer(decoder: jsonDecoder)
 The deserializer expects an object conforming to `Codable` to be deserialized from the response.
 If there was a `Car` object looking a little something like this
 ```swift
-struct Car: Codable, Hashable {
+struct Car: Codable, JSONAPIIdentifiable {
+    let identifier: String
     let mark: String
     let model: String
     let color: String
@@ -49,6 +50,17 @@ Then the JSON:API response the deserializer would expect to find would look a bi
 
 It could then be decoded like so:
 ```swift
+let rawJsonString = "..."
+let jsonData = rawJsonString.data(using: .utf8)!
+let car: Car = try! jsonApiDeserializer.deserialize(data: jsonData)
+```
+
+# Handling recursive properties
+Recursive properties must be handled with special care. 
+```swift
+let jsonApiDeserializer = JSONAPIDeserializer(decoder: jsonDecoder)
+jsonApiDeserializer.strategy = .handleRecursiveCases
+
 let rawJsonString = "..."
 let jsonData = rawJsonString.data(using: .utf8)!
 let car: Car = try! jsonApiDeserializer.deserialize(data: jsonData)
