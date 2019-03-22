@@ -30,13 +30,15 @@ import XCTest
 //    Key -> Car is a one to one relationship
 //
 
-struct Car: Codable, Equatable {
+struct Car: Codable, Equatable, JSONAPIIdentifiable {
+    var identifier: String
     let color: String
     let topSpeed: Int
     let isGood: Int
     let key: Key
     
-    init(color: String, topSpeed: Int, isGood: Int, key: Key) {
+    init(identifier: String, color: String, topSpeed: Int, isGood: Int, key: Key) {
+        self.identifier = identifier
         self.color = color
         self.topSpeed = topSpeed
         self.isGood = isGood
@@ -44,12 +46,14 @@ struct Car: Codable, Equatable {
     }
 }
 
-struct Key: Codable, Equatable {
+struct Key: Codable, Equatable, JSONAPIIdentifiable {
+    var identifier: String
     let isWireless: Int
     let hasKeychain: Int
     let name: String
     
-    init(isWireless: Int, hasKeychain: Int, name: String) {
+    init(identifier: String, isWireless: Int, hasKeychain: Int, name: String) {
+        self.identifier = identifier
         self.isWireless = isWireless
         self.hasKeychain = hasKeychain
         self.name = name
@@ -70,12 +74,7 @@ final class jabTests: XCTestCase {
             fatalError("Could not load JSON data")
         }
         
-        do {
-            let deserialized: Paginated<Car> = try jsonApiDeserializer.deserializeCollection(data: data)
-            XCTAssertTrue(true)
-        } catch {
-            XCTAssertTrue(false, "error deserializing: \(error.localizedDescription)")
-        }
+        XCTAssertNoThrow(try jsonApiDeserializer.deserializeCollection(data: data) as Paginated<Car>)
     }
     
     func testResourceSingleHavingSomeIncludedDataCanBeDeserialized() {
@@ -83,12 +82,7 @@ final class jabTests: XCTestCase {
             fatalError("Could not load JSON data")
         }
         
-        do {
-            let deserialized: Car = try jsonApiDeserializer.deserialize(data: data)
-            XCTAssertTrue(true)
-        } catch {
-            XCTAssertTrue(false, "error deserializing: \(error.localizedDescription)")
-        }
+        XCTAssertNoThrow(try jsonApiDeserializer.deserialize(data: data) as Car)
     }
     
     func testResourceSingleHavingSomeIncludedDataHasCorrectProps() {
@@ -98,11 +92,11 @@ final class jabTests: XCTestCase {
         
         do {
             let deserialized: Car = try jsonApiDeserializer.deserialize(data: data)
-            let expectedKey = Key(isWireless: 1, hasKeychain: 1, name: "Kljucevi Dragutina Tadijanovica")
-            let expectedCar = Car(color: "red", topSpeed: 240, isGood: 1, key: expectedKey)
+            let expectedKey = Key(identifier: "4", isWireless: 1, hasKeychain: 1, name: "Kljucevi Dragutina Tadijanovica")
+            let expectedCar = Car(identifier: "1", color: "red", topSpeed: 240, isGood: 1, key: expectedKey)
             XCTAssertEqual(deserialized, expectedCar, "Deserialized car should match expected values")
         } catch {
-            XCTAssertTrue(false, "error deserializing: \(error.localizedDescription)")
+            XCTAssertTrue(false, "Error deserializing: \(error.localizedDescription)")
         }
     }
     
@@ -111,12 +105,7 @@ final class jabTests: XCTestCase {
             fatalError("Could not load JSON data")
         }
         
-        do {
-            let deserialized: Car = try jsonApiDeserializer.deserialize(data: data)
-            XCTAssertTrue(false, "Somehow decoded an objecet with missing data")
-        } catch {
-            XCTAssertTrue(true, "Object missing included data: \(error.localizedDescription)")
-        }
+        XCTAssertThrowsError(try jsonApiDeserializer.deserialize(data: data) as Car)
     }
     
     private func loadJsonData(forResource resource: String) -> Data? {
@@ -129,6 +118,9 @@ final class jabTests: XCTestCase {
     }
 
     static var allTests = [
-        ("testExample", testResourceCollectionHavingSomeIncludedDataCanBeDeserialized),
+        ("testResourceCollectionHavingSomeIncludedDataCanBeDeserialized", testResourceCollectionHavingSomeIncludedDataCanBeDeserialized),
+        ("testResourceSingleHavingSomeIncludedDataCanBeDeserialized", testResourceSingleHavingSomeIncludedDataCanBeDeserialized),
+        ("testResourceSingleHavingSomeIncludedDataHasCorrectProps", testResourceSingleHavingSomeIncludedDataHasCorrectProps),
+        ("testResourceSingleMissingIncludedDataFailsAtDecoding", testResourceSingleMissingIncludedDataFailsAtDecoding)
     ]
 }

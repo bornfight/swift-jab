@@ -8,53 +8,73 @@
 import Foundation
 
 /// Transforms deeply nested JSON:API objects into regular objects
-/// with all of their relationships wired up. 
+/// with all of their relationships wired up.
+
 class JSONAPIFlattener {
     enum Error: Swift.Error {
-        case hasNoAttributes(dictionary: NSDictionary)
-        case missingDataAttribute(dictionary: NSDictionary)
+        case hasNoAttributes(dictionary: Dictionary<String, Any>)
+        case hasNoIdentifier(dictionary: Dictionary<String, Any>)
+        case missingDataAttribute(dictionary: Dictionary<String, Any>)
     }
     
-    func flattenCollection(jsonAPI: NSDictionary) throws -> [NSDictionary] {
-        guard let dataObject = jsonAPI["data"] as? [NSDictionary] else {
+    func flattenCollection(jsonAPI: Dictionary<String, Any>) throws -> [Dictionary<String, Any>] {
+        guard let dataObject = jsonAPI[JSONAPIKeys.data] as? [Dictionary<String, Any>] else {
             throw Error.missingDataAttribute(dictionary: jsonAPI)
         }
         
-        let includedObjects = jsonAPI["included"] as? [NSDictionary]
+        let includedObjects = jsonAPI[JSONAPIKeys.included] as? [Dictionary<String, Any>]
         
         return try dataObject.map { try parse(single: $0, includedObjects: includedObjects) }
     }
     
-    func flatten(jsonAPI: NSDictionary) throws -> NSDictionary {
-        guard let dataObject = jsonAPI["data"] as? NSDictionary else {
+    func flatten(jsonAPI: Dictionary<String, Any>) throws -> Dictionary<String, Any> {
+        guard let dataObject = jsonAPI[JSONAPIKeys.data] as? Dictionary<String, Any> else {
             throw Error.missingDataAttribute(dictionary: jsonAPI)
         }
         
-        let includedObjects = jsonAPI["included"] as? [NSDictionary]
+        let includedObjects = jsonAPI[JSONAPIKeys.included] as? [Dictionary<String, Any>]
         
         return try parse(single: dataObject, includedObjects: includedObjects)
     }
     
-    private func parse(single jsonApiObject: NSDictionary, includedObjects: [NSDictionary]?) throws -> NSDictionary {
-        guard let attributes = jsonApiObject["attributes"] as? NSDictionary else {
+    private func parse(single jsonApiObject: Dictionary<String, Any>, includedObjects: [Dictionary<String, Any>]?, recursivelySearchRelationships: Bool = true) throws -> Dictionary<String, Any> {
+        guard let attributes = jsonApiObject[JSONAPIKeys.attributes] as? Dictionary<String, Any> else {
             throw Error.hasNoAttributes(dictionary: jsonApiObject)
         }
         
-        guard let relationships = jsonApiObject["relationships"] as? NSDictionary,
-              let includes = includedObjects
-        else { return attributes }
+        guard let identifier = jsonApiObject[JSONAPIKeys.id] as? String else {
+            throw Error.hasNoIdentifier(dictionary: jsonApiObject)
+        }
         
-        let JSON = NSMutableDictionary(dictionary: attributes)
+        var JSON = attributes
+        JSON[JSONAPIKeys.identifier] = identifier
         
-        for relationshipKey in relationships.allKeys {
-            guard let relationship = relationships[relationshipKey] as? NSDictionary else { continue }
+        guard let relationships = jsonApiObject[JSONAPIKeys.relationships] as? Dictionary<String, Any>,
+              let includes = includedObjects,
+              recursivelySearchRelationships
+        else { return JSON }
+        
+        let relationshipData = parse(relationships: relationships, includes: includes)
+        
+        for relationKey in relationshipData.keys {
+            JSON[relationKey] = relationshipData[relationKey]
+        }
+        
+        return JSON
+    }
+    
+    private func parse(relationships: Dictionary<String, Any>, includes: [Dictionary<String, Any>]) -> Dictionary<String, Any> {
+        var JSON = Dictionary<String, Any>()
+        
+        for relationshipKey in relationships.keys {
+            guard let relationship = relationships[relationshipKey] as? Dictionary<String, Any> else { continue }
             
-            if let relationshipData = relationship["data"] as? [NSDictionary] {
-                let includes = relationshipData.compactMap { data in fetchAttributes(of: data, in: includes) }
+            if let relationshipData = relationship[JSONAPIKeys.data] as? [Dictionary<String, Any>] {
+                let allIncludedObjects = relationshipData.compactMap { data in fetchObjectAttributes(of: data, in: includes) }
                 
-                JSON[relationshipKey] = includes
-            } else if let relationshipData = relationship["data"] as? NSDictionary {
-                guard let includedAttributes = fetchAttributes(of: relationshipData, in: includes) else {
+                JSON[relationshipKey] = allIncludedObjects
+            } else if let relationshipData = relationship[JSONAPIKeys.data] as? Dictionary<String, Any> {
+                guard let includedAttributes = fetchObjectAttributes(of: relationshipData, in: includes) else {
                     continue
                 }
                 
@@ -67,17 +87,16 @@ class JSONAPIFlattener {
         return JSON
     }
     
-    private func locateIncludedObject(id: String, type: String, in includes: [NSDictionary]) -> NSDictionary? {
-        return includes.first(where: { $0["type"] as? String == type && $0["id"] as? String == id })
+    private func locateIncludedObject(id: String, type: String, in includes: [Dictionary<String, Any>]) -> Dictionary<String, Any>? {
+        return includes.first(where: { $0[JSONAPIKeys.type] as? String == type && $0[JSONAPIKeys.id] as? String == id })
     }
     
-    private func fetchAttributes(of dictionary: NSDictionary, in includedObjects: [NSDictionary]) -> NSDictionary? {
-        guard let type = dictionary["type"] as? String,
-              let id = dictionary["id"] as? String,
-              let included = locateIncludedObject(id: id, type: type, in: includedObjects),
-              let includedAttributes = included["attributes"] as? NSDictionary
+    private func fetchObjectAttributes(of dictionary: Dictionary<String, Any>, in includedObjects: [Dictionary<String, Any>]) -> Dictionary<String, Any>? {
+        guard let type = dictionary[JSONAPIKeys.type] as? String,
+              let id = dictionary[JSONAPIKeys.id] as? String,
+              let included = locateIncludedObject(id: id, type: type, in: includedObjects)
         else { return nil }
         
-        return includedAttributes
+        return try? parse(single: included, includedObjects: includedObjects, recursivelySearchRelationships: false)
     }
 }
