@@ -1,8 +1,8 @@
 //
-//  NestedDeserialization.swift
+//  NestedRecursiveDeserialization.swift
 //  jabTests
 //
-//  Created by Dino on 21/03/2019.
+//  Created by Dino on 25/03/2019.
 //
 
 @testable import jab
@@ -26,6 +26,7 @@ fileprivate struct Language: Codable, Equatable, JSONAPIIdentifiable {
     let name: String
     let compileTarget: CompileTarget
     let isForGoodProgrammersOnly: Int
+    let users: [Programmer]
 }
 
 fileprivate struct CompileTarget: Codable, Equatable, JSONAPIIdentifiable {
@@ -33,7 +34,7 @@ fileprivate struct CompileTarget: Codable, Equatable, JSONAPIIdentifiable {
     let name: String
 }
 
-class NestedDeserialization: XCTestCase {
+class NestedRecursiveDeserialization: XCTestCase {
     lazy var bundle = Bundle(for: type(of: self))
     let jsonDecoder = { () -> JSONDecoder in
         let decoder = JSONDecoder()
@@ -42,16 +43,16 @@ class NestedDeserialization: XCTestCase {
     }()
     lazy var jsonApiDeserializer: JSONAPIDeserializer = JSONAPIDeserializer(decoder: jsonDecoder)
     
-    func testNestedResourceSucessfulyDecodes() {
-        guard let data = loadJsonData(forResource: "programmer_ide") else {
+    func testNestedRecursiveResourceSucessfulyBreaksRecursion() {
+        guard let data = loadJsonData(forResource: "programmer_ide_language") else {
             fatalError("Could not load JSON data")
         }
-        
+        _ = try? jsonApiDeserializer.deserialize(data: data) as Programmer
         XCTAssertNoThrow(try jsonApiDeserializer.deserialize(data: data) as Programmer)
     }
     
-    func testNestedResourceSucessfulyLoadsProps() {
-        guard let data = loadJsonData(forResource: "programmer_ide") else {
+    func testNestedRecursiveResourceSucessfulyLoadsProps() {
+        guard let data = loadJsonData(forResource: "programmer_ide_language") else {
             fatalError("Could not load JSON data")
         }
         
@@ -59,8 +60,9 @@ class NestedDeserialization: XCTestCase {
             XCTAssertTrue(false, "could not decode Programmer")
             return
         }
+        
         let expectedCompileTarget = CompileTarget(identifier: "1", name: "x86_64")
-        let expectedLanguage = Language(identifier: "1", name: "Swift", compileTarget: expectedCompileTarget, isForGoodProgrammersOnly: 1)
+        let expectedLanguage = Language(identifier: "1", name: "Swift", compileTarget: expectedCompileTarget, isForGoodProgrammersOnly: 1, users: [])
         let expectedIDE = IDE(identifier: "1", name: "Xcode", language: expectedLanguage)
         let expectedProgrammer = Programmer(identifier: "1", name: "Dino", favouriteIDE: expectedIDE, isDarkModeUser: 1)
         
@@ -75,5 +77,4 @@ class NestedDeserialization: XCTestCase {
         
         return data
     }
-
 }

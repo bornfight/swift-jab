@@ -1,0 +1,68 @@
+{
+    "jsonapi": {
+        "version": "1.0"
+    },
+    "data": {
+        "type": "programmers",
+        "id": "1",
+        "attributes": {
+            "name": "Dino",
+            "is_dark_mode_user": 1
+        },
+        "relationships": {
+            "favouriteIDE": {
+                "data": {
+                    "type": "ides",
+                    "id": "1"
+                }
+            }
+        }
+    },
+    "included": [{
+        "type": "ides",
+        "id": "1",
+        "attributes": {
+            "name": "Xcode"
+        },
+        "relationships": {
+            "language": {
+                "data": {
+                    "type": "languages",
+                    "id": "1"
+                }
+            }
+        }
+    },
+    {
+        "type": "languages",
+        "id": "1",
+        "attributes": {
+            "name": "Swift",
+            "is_for_good_programmers_only": 1
+        },
+        "relationships": {
+            "compileTarget": {
+                "data": {
+                    "type": "targets",
+                    "id": "1"
+                }
+            },
+            "users":{
+                "data": [
+                    {
+                        "type": "programmer",
+                        "id": "1"
+                    }
+                ]
+            }
+        }
+    },
+    {
+        "type": "targets",
+        "id": "1",
+        "attributes": {
+            "name": "x86_64"
+        }
+    }
+    ]
+}
