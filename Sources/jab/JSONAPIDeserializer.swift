@@ -20,6 +20,14 @@ public class JSONAPIDeserializer {
     
     private let decoder: JSONDecoder
     private let flattener: JSONAPIFlattener
+    public var flatteningStrategy: JSONAPIFlatteningStrategy {
+        get {
+            return flattener.strategy
+        }
+        set {
+            flattener.strategy = newValue
+        }
+    }
     
     init(decoder: JSONDecoder = JSONDecoder(), jsonApiDecoder: JSONAPIFlattener = JSONAPIFlattener()) {
         self.decoder = decoder

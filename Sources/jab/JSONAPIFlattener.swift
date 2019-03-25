@@ -7,6 +7,11 @@
 
 import Foundation
 
+public enum JSONAPIFlatteningStrategy {
+    case handleRecursiveCases
+    case handleNestedProps
+}
+
 /// Transforms deeply nested JSON:API objects into regular objects
 /// with all of their relationships wired up.
 
@@ -15,6 +20,12 @@ class JSONAPIFlattener {
         case hasNoAttributes(dictionary: Dictionary<String, Any>)
         case hasNoIdentifier(dictionary: Dictionary<String, Any>)
         case missingDataAttribute(dictionary: Dictionary<String, Any>)
+    }
+
+    var strategy: JSONAPIFlatteningStrategy
+    
+    init(strategy: JSONAPIFlatteningStrategy = .handleNestedProps) {
+        self.strategy = strategy
     }
     
     func flattenCollection(jsonAPI: Dictionary<String, Any>) throws -> [Dictionary<String, Any>] {
@@ -97,6 +108,7 @@ class JSONAPIFlattener {
               let included = locateIncludedObject(id: id, type: type, in: includedObjects)
         else { return nil }
         
-        return try? parse(single: included, includedObjects: includedObjects, recursivelySearchRelationships: false)
+        let shouldRecursivelySearch = strategy != .handleRecursiveCases
+        return try? parse(single: included, includedObjects: includedObjects, recursivelySearchRelationships: shouldRecursivelySearch)
     }
 }

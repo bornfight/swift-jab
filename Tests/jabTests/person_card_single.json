@@ -1,0 +1,38 @@
+{
+    "jsonapi": {
+        "version": "1.0"
+    },
+    "data": {
+        "type": "people",
+        "id": "1",
+        "attributes": {
+            "name": "Franjo",
+            "age": 97,
+        },
+        "relationships": {
+            "card": {
+                "data": {
+                    "type": "cards",
+                    "id": "2"
+                }
+            }
+        }
+    },
+    "included": [{
+        "type": "cards",
+        "id": "2",
+        "attributes": {
+            "bankName": "Honduras",
+            "expiryDate": "09/2024"
+        },
+        "relationships": {
+            "owner": {
+                "data": [{
+                    "type": "people",
+                    "id": "1"
+                }]
+            }
+        }
+    }
+    ]
+}
