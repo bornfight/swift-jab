@@ -44,6 +44,10 @@ public class JSONAPIDeserializer {
         return try decoder.decode(T.self, from: resourceData)
     }
     
+    public func deserialize<T: Resource>(data: Data) -> Result<T, Swift.Error> {
+        return Result(catching: { try deserialize(data: data) })
+    }
+    
     public func deserializeCollection<T: Resource>(data: Data) throws -> Paginated<T> {
         let jsonDataOption = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? Dictionary<String, Any>
         let jsonData = try unwrap(jsonDataOption, orThrow: Error.notConvertibleToDictionary(data: data))
@@ -57,5 +61,9 @@ public class JSONAPIDeserializer {
         let resources = try decoder.decode([T].self, from: resourcesData)
         
         return Paginated(links: links, resources: resources)
+    }
+    
+    public func deserializeCollection<T: Resource>(data: Data) -> Result<Paginated<T>, Swift.Error> {
+        return Result(catching: { try deserializeCollection(data: data) })
     }
 }
