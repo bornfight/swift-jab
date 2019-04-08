@@ -12,6 +12,7 @@ public class JSONAPIDeserializer {
         case missingLinksParameter(dictionary: Dictionary<String, Any>)
         case failedToTransformToUTF8(string: String)
         case notConvertibleToDictionary(data: Data)
+        case failedToDecode(data: Data)
     }
     
     public typealias Resource = Codable & JSONAPIIdentifiable
@@ -40,8 +41,14 @@ public class JSONAPIDeserializer {
 
         let resourceDictionary = try flattener.flatten(jsonAPI: jsonData)
         let resourceData = try JSONSerialization.data(withJSONObject: resourceDictionary, options: .prettyPrinted)
-        
-        return try decoder.decode(T.self, from: resourceData)
+
+        if let object = try? decoder.decode(T.self, from: resourceData) {
+            return object
+        } else if let jsonApiError = try? decoder.decode(JSONAPIErrors.self, from: resourceData) {
+            throw jsonApiError
+        } else {
+            throw Error.failedToDecode(data: resourceData)
+        }
     }
     
     public func deserialize<T: Resource>(data: Data) -> Result<T, Swift.Error> {
@@ -58,9 +65,14 @@ public class JSONAPIDeserializer {
         
         let resourcesDictionary = try flattener.flattenCollection(jsonAPI: jsonData)
         let resourcesData = try JSONSerialization.data(withJSONObject: resourcesDictionary, options: .prettyPrinted)
-        let resources = try decoder.decode([T].self, from: resourcesData)
         
-        return Paginated(links: links, resources: resources)
+        if let resources = try? decoder.decode([T].self, from: resourcesData) {
+            return Paginated(links: links, resources: resources)
+        } else if let jsonApiError = try? decoder.decode(JSONAPIErrors.self, from: resourcesData) {
+            throw jsonApiError
+        } else {
+            throw Error.failedToDecode(data: resourcesData)
+        }
     }
     
     public func deserializeCollection<T: Resource>(data: Data) -> Result<Paginated<T>, Swift.Error> {

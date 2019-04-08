@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct JSONAPIError: Decodable {
+public struct JSONAPIError: Decodable, Error {
     struct Source: Decodable {
         let pointer: String
     }
@@ -16,4 +16,8 @@ struct JSONAPIError: Decodable {
     let source: Source?
     let title: String?
     let detail: String?
+}
+
+public struct JSONAPIErrors: Decodable, Error {
+    let errors: [JSONAPIError]
 }
