@@ -31,13 +31,17 @@ import XCTest
 //
 
 struct Car: Codable, Equatable, JSONAPIIdentifiable {
+    static var jsonTypeIdentifier: String {
+        return "cars"
+    }
+    
     var identifier: String
     let color: String
     let topSpeed: Int
     let isGood: Int
-    let key: Key
+    let key: Key?
     
-    init(identifier: String, color: String, topSpeed: Int, isGood: Int, key: Key) {
+    init(identifier: String, color: String, topSpeed: Int, isGood: Int, key: Key?) {
         self.identifier = identifier
         self.color = color
         self.topSpeed = topSpeed
@@ -47,6 +51,10 @@ struct Car: Codable, Equatable, JSONAPIIdentifiable {
 }
 
 struct Key: Codable, Equatable, JSONAPIIdentifiable {
+    static var jsonTypeIdentifier: String {
+        return "keys"
+    }
+    
     var identifier: String
     let isWireless: Int
     let hasKeychain: Int
