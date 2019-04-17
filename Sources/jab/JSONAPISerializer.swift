@@ -76,9 +76,6 @@ public class JSONAPISerializer {
             }
             
             if recursively {
-                // To enable recursive reflection, all we have to do
-                // is to call our own method again, using the value
-                // of each child, and using the same closure.
                 reflectNamedProperties(
                     of: child.value,
                     recursively: true,
