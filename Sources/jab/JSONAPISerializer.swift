@@ -57,33 +57,9 @@ public class JSONAPISerializer {
         return try JSONSerialization.data(withJSONObject: rootJson, options: .prettyPrinted)
     }
     
-//    public func serialize<T: Resource>(resource: T) -> Result<Data, Swift.Error> {
-//        return Result(catching: { try serialize(resource: resource) })
-//    }
-//
-//    public func deserializeCollection<T: Resource>(data: Data) throws -> Paginated<T> {
-//        let jsonDataOption = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? Dictionary<String, Any>
-//        let jsonData = try unwrap(jsonDataOption, orThrow: Error.notConvertibleToDictionary(data: data))
-//        
-//        let linksDict = try unwrap(jsonData[JSONAPIKeys.links] as? Dictionary<String, Any>, orThrow: Error.missingLinksParameter(dictionary: jsonData))
-//        let linksData = try JSONSerialization.data(withJSONObject: linksDict, options: .prettyPrinted)
-//        let links = try decoder.decode(Links.self, from: linksData)
-//        
-//        let resourcesDictionary = try flattener.flattenCollection(jsonAPI: jsonData)
-//        let resourcesData = try JSONSerialization.data(withJSONObject: resourcesDictionary, options: .prettyPrinted)
-//        
-//        if let resources = try? decoder.decode([T].self, from: resourcesData) {
-//            return Paginated(links: links, resources: resources)
-//        } else if let jsonApiError = try? decoder.decode(JSONAPIErrors.self, from: resourcesData) {
-//            throw jsonApiError
-//        } else {
-//            throw Error.failedToDecode(data: resourcesData)
-//        }
-//    }
-//    
-//    public func deserializeCollection<T: Resource>(data: Data) -> Result<Paginated<T>, Swift.Error> {
-//        return Result(catching: { try deserializeCollection(data: data) })
-//    }
+    public func serialize<T: Resource>(resource: T) -> Result<Data, Swift.Error> {
+        return Result(catching: { try serialize(resource: resource) })
+    }
     
     private func reflectNamedProperties<T>(
         of target: Any,
