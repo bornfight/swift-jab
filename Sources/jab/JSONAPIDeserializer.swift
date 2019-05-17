@@ -30,7 +30,7 @@ public class JSONAPIDeserializer {
         }
     }
     
-    init(decoder: JSONDecoder = JSONDecoder(), jsonApiDecoder: JSONAPIFlattener = JSONAPIFlattener()) {
+    public init(decoder: JSONDecoder = JSONDecoder(), jsonApiDecoder: JSONAPIFlattener = JSONAPIFlattener()) {
         self.decoder = decoder
         self.flattener = jsonApiDecoder
     }
