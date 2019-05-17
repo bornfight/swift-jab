@@ -9,6 +9,10 @@
 import XCTest
 
 fileprivate struct Programmer: Codable, Equatable, JSONAPIIdentifiable {
+    static var jsonTypeIdentifier: String {
+        return "programmers"
+    }
+    
     var identifier: String
     let name: String
     let favouriteIDE: IDE
@@ -16,12 +20,20 @@ fileprivate struct Programmer: Codable, Equatable, JSONAPIIdentifiable {
 }
 
 fileprivate struct IDE: Codable, Equatable, JSONAPIIdentifiable {
+    static var jsonTypeIdentifier: String {
+        return "ides"
+    }
+    
     var identifier: String
     let name: String
     let language: Language
 }
 
 fileprivate struct Language: Codable, Equatable, JSONAPIIdentifiable {
+    static var jsonTypeIdentifier: String {
+        return "languages"
+    }
+    
     var identifier: String
     let name: String
     let compileTarget: CompileTarget
@@ -29,6 +41,10 @@ fileprivate struct Language: Codable, Equatable, JSONAPIIdentifiable {
 }
 
 fileprivate struct CompileTarget: Codable, Equatable, JSONAPIIdentifiable {
+    static var jsonTypeIdentifier: String {
+        return "targets"
+    }
+    
     var identifier: String
     let name: String
 }

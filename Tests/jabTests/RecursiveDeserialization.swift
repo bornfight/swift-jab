@@ -9,6 +9,10 @@
 import XCTest
 
 class Person: Codable, Equatable, JSONAPIIdentifiable {
+    static var jsonTypeIdentifier: String {
+        return "people"
+    }
+    
     var identifier: String
     let name: String
     let age: Int
@@ -29,6 +33,10 @@ class Person: Codable, Equatable, JSONAPIIdentifiable {
 }
 
 class CreditCard: Codable, Equatable, JSONAPIIdentifiable {
+    static var jsonTypeIdentifier: String {
+        return "cards"
+    }
+    
     var identifier: String
     let bankName: String
     let expiryDate: String

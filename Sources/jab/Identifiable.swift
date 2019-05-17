@@ -10,11 +10,5 @@ import Foundation
 public protocol JSONAPIIdentifiable {
     var identifier: String { get set }
     
-    static var codingKey: String { get }
-}
-
-extension JSONAPIIdentifiable {
-    static var codingKey: String {
-        return "id"
-    }
+    static var jsonTypeIdentifier: String { get }
 }
