@@ -20,7 +20,7 @@ public class JSONAPIDeserializer {
     public static let `default` = JSONAPIDeserializer()
     
     private let decoder: JSONDecoder
-    private let flattener: JSONAPIFlattener
+    private let flattener = JSONAPIFlattener()
     public var flatteningStrategy: JSONAPIFlatteningStrategy {
         get {
             return flattener.strategy
@@ -30,9 +30,8 @@ public class JSONAPIDeserializer {
         }
     }
     
-    public init(decoder: JSONDecoder = JSONDecoder(), jsonApiDecoder: JSONAPIFlattener = JSONAPIFlattener()) {
+    public init(decoder: JSONDecoder = JSONDecoder()) {
         self.decoder = decoder
-        self.flattener = jsonApiDecoder
     }
     
     public func deserialize<T: Resource>(data: Data) throws -> T {
