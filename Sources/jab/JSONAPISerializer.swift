@@ -38,7 +38,7 @@ public class JSONAPISerializer {
             let relation: [String: [String: Any]] = [
                 JSONAPIKeys.data.rawValue: [
                     JSONAPIKeys.type.rawValue: type(of: child).jsonTypeIdentifier,
-                    JSONAPIKeys.id.rawValue: child.identifier
+                    JSONAPIKeys.id.rawValue: child.id
                 ]
             ]
             relationships[label] = relation
@@ -47,7 +47,7 @@ public class JSONAPISerializer {
         
         json[JSONAPIKeys.id] = id
         json[JSONAPIKeys.attributes] = resourceJSON
-        json[JSONAPIKeys.type] = resource.identifier
+        json[JSONAPIKeys.type] = resource.id
         json[JSONAPIKeys.relationships] = relationships
         
         let rootJson: [String: Any] = [

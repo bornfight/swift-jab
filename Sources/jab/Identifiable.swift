@@ -8,7 +8,7 @@
 import Foundation
 
 public protocol JSONAPIIdentifiable {
-    var identifier: String { get set }
+    var id: String { get }
     
     static var jsonTypeIdentifier: String { get }
 }
