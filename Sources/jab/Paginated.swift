@@ -8,6 +8,11 @@
 import Foundation
 
 public class Paginated<Resource: Codable>: Codable {
+    enum CodingKeys: String, CodingKey {
+        case links
+        case resources = "data"
+    }
+    
     public var links: Links
     public var resources: [Resource]
     
