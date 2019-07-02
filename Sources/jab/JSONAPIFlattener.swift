@@ -99,7 +99,9 @@ class JSONAPIFlattener {
     }
     
     private func locateIncludedObject(id: String, type: String, in includes: [Dictionary<String, Any>]) -> Dictionary<String, Any>? {
-        return includes.first(where: { $0[JSONAPIKeys.type] as? String == type && $0[JSONAPIKeys.id] as? String == id })
+        return includes.first(where: { include in
+            include[JSONAPIKeys.type] as? String == type && include[JSONAPIKeys.id] as? String == id
+        })
     }
     
     private func fetchObjectAttributes(of dictionary: Dictionary<String, Any>, in includedObjects: [Dictionary<String, Any>]) -> Dictionary<String, Any>? {
