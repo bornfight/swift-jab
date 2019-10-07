@@ -214,8 +214,8 @@
       "OBJ_33" = {
          isa = "PBXGroup";
          children = (
-            "jab::jabTests::Product",
-            "jab::jab::Product"
+            "jab::jab::Product",
+            "jab::jabTests::Product"
          );
          name = "Products";
          path = "";
