@@ -8,11 +8,11 @@
 import Foundation
 
 public struct Links: Codable {
-    let current: String?
-    let first: String?
-    let last: String?
-    let previous: String?
-    let next: String?
+    var current: String?
+    var first: String?
+    var last: String?
+    var previous: String?
+    var next: String?
     
     enum CodingKeys: String, CodingKey {
         case current = "self"
