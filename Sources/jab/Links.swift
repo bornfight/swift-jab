@@ -8,7 +8,7 @@
 import Foundation
 
 public struct Links: Codable {
-    let current: String
+    let current: String?
     let first: String?
     let last: String?
     let previous: String?
