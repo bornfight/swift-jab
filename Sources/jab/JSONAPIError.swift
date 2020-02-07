@@ -8,14 +8,14 @@
 import Foundation
 
 public struct JSONAPIError: Decodable, Error {
-    struct Source: Decodable {
-        let pointer: String
+    public struct Source: Decodable {
+        public let pointer: String
     }
     
-    let status: String?
-    let source: Source?
-    let title: String?
-    let detail: String?
+    public let status: String?
+    public let source: Source?
+    public let title: String?
+    public let detail: String?
 }
 
 public struct JSONAPIErrors: Decodable, Error {
