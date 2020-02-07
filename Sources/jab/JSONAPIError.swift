@@ -19,5 +19,5 @@ public struct JSONAPIError: Decodable, Error {
 }
 
 public struct JSONAPIErrors: Decodable, Error {
-    let errors: [JSONAPIError]
+    public let errors: [JSONAPIError]
 }
