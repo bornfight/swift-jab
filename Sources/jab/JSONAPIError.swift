@@ -16,6 +16,7 @@ public struct JSONAPIError: Decodable, Error {
     public let source: Source?
     public let title: String?
     public let detail: String?
+    public let code: String?
 }
 
 public struct JSONAPIErrors: Decodable, Error {
